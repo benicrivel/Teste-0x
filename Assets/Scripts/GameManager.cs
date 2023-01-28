@@ -5,18 +5,31 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    //Player Deck and Hand
+    //Deck, Hand and Boards
     public List<CardDisplay> deck = new List<CardDisplay>();
     public Transform[] cardSlots;
     public bool[] availableCardSlots;
+    public Transform[] playerBoard;
+    public bool[] availableCardSlotsPlayerBoard;
+    public Transform[] enemyBoard;
+    public bool[] availableCardSlotsEnemyBoard;
 
     //Points Visual
+    public int playerWins;
+    public int enemyWins;
     public GameObject playerWin1;
     public GameObject playerWin2;
     public GameObject playerWin3;
     public GameObject enemyWin1;
     public GameObject enemyWin2;
     public GameObject enemyWin3;
+
+    //Board Control
+    public bool isPlayersTurn;
+
+    //Energy Meter
+    public int energy;
+
 
     public void DrawCard()
     {
@@ -27,7 +40,6 @@ public class GameManager : MonoBehaviour
             {
                 if(availableCardSlots[i] == true)
                 {
-                    Debug.Log("available + " + randCard);
                     Instantiate(randCard, cardSlots[i]);
                     availableCardSlots[i] = false;
                     deck.Remove(randCard);
@@ -39,41 +51,82 @@ public class GameManager : MonoBehaviour
 
     public void PlayerWin()
     {
-        if(playerWin1 == false)
+        playerWins++;
+        switch (playerWins) 
         {
-            playerWin1.SetActive(true);
-        }
-        else if(playerWin2 == false)
-        {
-            playerWin2.SetActive(true);
-        }
-        else if (playerWin3 == false)
-        {
-            playerWin3.SetActive(true);
-            //End match
+            case 0:
+                playerWin1.SetActive(false);
+                playerWin2.SetActive(false);
+                playerWin3.SetActive(false);
+                break;
+            case 1:
+                playerWin1.SetActive(true);
+                playerWin2.SetActive(false);
+                playerWin3.SetActive(false);
+                break;
+            case 2:
+                playerWin1.SetActive(true);
+                playerWin2.SetActive(true);
+                playerWin3.SetActive(false);
+                break;
+            case 3:
+                playerWin1.SetActive(true);
+                playerWin2.SetActive(true);
+                playerWin3.SetActive(true);
+                //End Game
+                break;
         }
     }
 
     public void EnemyWin()
     {
-        if (enemyWin1 == false)
+        enemyWins++;
+        switch (enemyWins)
         {
-            enemyWin1.SetActive(true);
-        }
-        else if (enemyWin2 == false)
-        {
-            enemyWin2.SetActive(true);
-        }
-        else if (enemyWin3 == false)
-        {
-            enemyWin3.SetActive(true);
-            //End match
+            case 0:
+                enemyWin1.SetActive(false);
+                enemyWin2.SetActive(false);
+                enemyWin3.SetActive(false);
+                break;
+            case 1:
+                enemyWin1.SetActive(true);
+                enemyWin2.SetActive(false);
+                enemyWin3.SetActive(false);
+                break;
+            case 2:
+                enemyWin1.SetActive(true);
+                enemyWin2.SetActive(true);
+                enemyWin3.SetActive(false);
+                break;
+            case 3:
+                enemyWin1.SetActive(true);
+                enemyWin2.SetActive(true);
+                enemyWin3.SetActive(true);
+                //End Game
+                break;
+
         }
     }
 
-    // Start is called before the first frame update
+    public void EndTurn()
+    {
+        //Give opponent 3 energy
+    }
+
+    public void PlayerExpendingEnergy(int a)
+    {
+        energy -= a;
+        Debug.Log("Energy: " + energy);
+    }
+
+    public bool IsPlayersTurn()
+    {
+        return isPlayersTurn;
+    }
+
     void Start()
     {
+        playerWins = enemyWins = 0;
         //Player's starting hand
         for (int i = 0; i < 5; i++)
         {
@@ -81,9 +134,16 @@ public class GameManager : MonoBehaviour
         }        
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        //Make it less memory consuming
+        if(energy >= 0)
+        {
+            isPlayersTurn = true;
+        }
+        else
+        {
+            isPlayersTurn = false;
+        }
     }
 }
