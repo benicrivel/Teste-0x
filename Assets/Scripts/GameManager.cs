@@ -54,9 +54,6 @@ public class GameManager : MonoBehaviour
 
     //Test
     public CardDisplay cdt;
-    public bool isTimerOk;
-    public float timerBase;
-    public float timerEnemy;
 
     public void DrawCard()
     {
@@ -107,7 +104,7 @@ public class GameManager : MonoBehaviour
     public void EnemyPlayCard()
     {
         Debug.Log("Enemy played a card");
-        if (enemyDeck.Count >= 1 && canEnemyPlay && isTimerOk)
+        if (enemyDeck.Count >= 1 && canEnemyPlay)
         {
             Card randCard = enemyDeck[Random.Range(0, enemyDeck.Count)];
             for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
@@ -234,18 +231,8 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Case 4");
             Rumble();
-            isTimerOk = false;
-            timerEnemy = timerBase + timeToWait;
             cardsPlayed = 0;
             RefreshText();
-        }
-    }
-
-    public void CheckTimer()
-    {
-        if(timerEnemy <= timerBase)
-        {
-            isTimerOk = true;
         }
     }
 
@@ -392,14 +379,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerWins = enemyWins = 0;
-        timerEnemy = 0;
         DrawOpeningHand();
         TurnCheck();
-    }
-
-    private void Update()
-    {
-        timerBase += Time.deltaTime;
-        CheckTimer();
     }
 }
