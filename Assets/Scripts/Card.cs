@@ -10,6 +10,5 @@ public class Card : ScriptableObject
     public string cardName;
     public int attack;
     public int defense;
-    public string effect;
     public Sprite art;    
 }

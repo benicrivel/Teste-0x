@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     //Deck, Hand
-    public List<CardDisplay> playerDeck = new List<CardDisplay>();
-    public List<CardDisplay> playerHand = new List<CardDisplay>();
-    public List<CardDisplay> enemyDeck = new List<CardDisplay>();
+    public List<Card> playerDeck = new List<Card>();
+    public List<Card> playerHand = new List<Card>();
+    public List<Card> enemyDeck = new List<Card>();
     public Transform[] cardSlots;
     public bool[] availableCardSlots;
 
@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour
     public bool[] availableCardSlotsPlayerBoard;
     public Transform[] enemyBoardPos;
     public bool[] availableCardSlotsEnemyBoard;
-    public List<CardDisplay> playerBoard = new List<CardDisplay>();
-    public List<CardDisplay> enemyBoard = new List<CardDisplay>();
+    public List<Card> playerBoard = new List<Card>();
+    public List<Card> enemyBoard = new List<Card>();
 
     //Points Visual
     public int playerWins;
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public GameObject enemyWin1;
     public GameObject enemyWin2;
     public GameObject enemyWin3;
+    public GameObject tag;
 
     //Board Control
     public bool isPlayersTurn;
@@ -42,7 +43,7 @@ public class GameManager : MonoBehaviour
     public int cardsPlayed;
     public Text cardsPlayedText;
 
-    //Aniamtion
+    //Animation
     public float timeToWait;
     public GameObject fire;
     public GameObject crown;
@@ -51,17 +52,22 @@ public class GameManager : MonoBehaviour
     public GameObject winMenu;
     public GameObject loseMenu;
 
+    //Test
+    public Card cardTest;
+    public CardDisplay cdt;
+
     public void DrawCard()
     {
-        if(playerDeck.Count >= 1)
+        if (playerDeck.Count >= 1)
         {
-            CardDisplay randCard = playerDeck[Random.Range(0, playerDeck.Count)];
+            Card randCard = playerDeck[Random.Range(0, playerDeck.Count)];
             for (int i = 0; i < availableCardSlots.Length; i++)
             {
-                if(availableCardSlots[i] == true)
+                if (availableCardSlots[i] == true)
                 {
-                    Instantiate(randCard, cardSlots[i]);
-                    randCard.handIndex = i;
+                    CardDisplay a = Instantiate(cdt, cardSlots[i]);
+                    a.card = randCard;
+                    a.handIndex = i;
                     availableCardSlots[i] = false;
                     playerHand.Add(randCard);
                     playerDeck.Remove(randCard);
@@ -71,51 +77,53 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PlayerPlayCard(CardDisplay cd)
+    public void PlayerPlayCard(Card cd)
     {
         for (int i = 0; i < availableCardSlotsPlayerBoard.Length; i++)
         {
             if (availableCardSlotsPlayerBoard[i] == true)
-            {                
-                CardDisplay a = Instantiate(cd, playerBoardPos[i]);
+            {
+                CardDisplay a = Instantiate(cdt, playerBoardPos[i]);
+                a.card = cd;
                 a.gameObject.AddComponent<BornToDie>();
                 availableCardSlotsPlayerBoard[i] = false;
-                playerBoard.Add(a);
+                playerBoard.Add(a.card);
                 //Make the hand spot free again
-                for(int o = 0; o > playerHand.Count; o++)
+                for (int o = 0; o > playerHand.Count; o++)
                 {
-                    if (playerHand[o].card.cardName == a.card.cardName)
-                    {                        
+                    if (playerHand[o].cardName == a.card.cardName)
+                    {
                         availableCardSlots[o] = true;
                     }
                 }
-                playerHand.Remove(a);
+                playerHand.Remove(a.card);
                 return;
             }
         }
-    }
+    }      
 
     public void EnemyPlayCard()
     {
         if (enemyDeck.Count >= 1 && canEnemyPlay)
         {
-            CardDisplay randCard = enemyDeck[Random.Range(0, enemyDeck.Count)];
+            Card randCard = enemyDeck[Random.Range(0, enemyDeck.Count)];
             for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
             {
                 if (availableCardSlotsEnemyBoard[i] == true)
                 {
-                    CardDisplay a = Instantiate(randCard, enemyBoardPos[i]);
+                    CardDisplay a = Instantiate(cdt, enemyBoardPos[i]);
+                    a.card = randCard;
                     a.gameObject.AddComponent<BornToDie>();
                     availableCardSlotsEnemyBoard[i] = false;
                     int randCardCost = a.card.cost;
-                    PlayerExpendingEnergy(-randCardCost);
-                    enemyBoard.Add(a);
+                    enemyBoard.Add(a.card);
                     enemyDeck.Remove(randCard);
+                    PlayerExpendingEnergy(-randCardCost);
                     return;
                 }
             }
         }
-        if(energy < 0)
+        if (energy < 0)
         {
             EnemyPlayCard();
         }
@@ -201,11 +209,19 @@ public class GameManager : MonoBehaviour
 
     public void PlayerExpendingEnergy(int a)
     {
+        canEnemyPlay = false;
         cardsPlayed++;
-        energy -= a;        
+        energy -= a;
+        MoveTag(a);
         RefreshText();
         SwitchPlayed();
         TurnCheck();
+    }
+
+    public void MoveTag(int a)
+    {
+        float i = tag.transform.position.y + (a * 25f);
+        tag.transform.position = new Vector3(tag.transform.position.x, i , tag.transform.position.z);
     }
 
     public void SwitchPlayed()
@@ -272,6 +288,7 @@ public class GameManager : MonoBehaviour
         {
             isPlayersTurn = false;
             canEnemyPlay = true;
+            //EnemyPlayCard();
             EnemyPlayCard();
         }
     }
@@ -299,6 +316,7 @@ public class GameManager : MonoBehaviour
             playerPower = 0;
             enemyPower = 0;
         }
+        canEnemyPlay = false;
         StartCoroutine(Wait());
         StartCoroutine(ResetBoards2());
         //ResetBoards();
@@ -310,35 +328,7 @@ public class GameManager : MonoBehaviour
         canEnemyPlay = false;
         isPlayersTurn = false;
         yield return new WaitForSecondsRealtime(timeToWait);
-
     }
-
-    public int CheckPlayerBoard()
-    {
-        int a = 0;
-
-        for (int i = 0; i < playerBoard.Count; i++)
-        {
-            a += playerBoard[i].card.attack;
-            Debug.Log("PlayerPower: " + a);
-        }      
-
-        return a;
-    }
-
-    public int CheckEnemyBoard()
-    {
-        int a = 0;
-
-        for (int i = 0; i < enemyBoard.Count; i++)
-        {
-            a += enemyBoard[i].card.attack;
-            Debug.Log("EnemyPower: " + a);
-        }      
-
-        return a;
-    }
-
 
     IEnumerator ResetBoards2()
     {
@@ -358,6 +348,32 @@ public class GameManager : MonoBehaviour
         {
             Destroy(c.gameObject);
         }
+    }
+
+    public int CheckPlayerBoard()
+    {
+        int a = 0;
+
+        for (int i = 0; i < playerBoard.Count; i++)
+        {
+            a += playerBoard[i].attack;
+            Debug.Log("PlayerPower: " + a);
+        }      
+
+        return a;
+    }
+
+    public int CheckEnemyBoard()
+    {
+        int a = 0;
+
+        for (int i = 0; i < enemyBoard.Count; i++)
+        {
+            a += enemyBoard[i].attack;
+            Debug.Log("EnemyPower: " + a);
+        }      
+
+        return a;
     }
 
     public void ResetBoards()
