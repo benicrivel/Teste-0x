@@ -4176,7 +4176,6 @@ MonoBehaviour:
   crown: {fileID: 4529571956870776925, guid: f05209670fed3214288ec2a698563580, type: 3}
   winMenu: {fileID: 1366851043}
   loseMenu: {fileID: 1597915947}
-  cardTest: {fileID: 11400000, guid: 1c26dfedba3f38e4db4d34e3dfb8ca4d, type: 2}
   cdt: {fileID: 2333006831157039314, guid: a4e158d7ef9454243ac7136faca3a0f3, type: 3}
 --- !u!4 &990520982
 Transform:
@@ -7921,7 +7920,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1923952556
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7939,7 +7938,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -19.201, y: 222.2}
+  m_AnchoredPosition: {x: -375, y: 37}
   m_SizeDelta: {x: 169.34, y: 86.6921}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1923952557

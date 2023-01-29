@@ -29,4 +29,9 @@ public class ChangeScene : MonoBehaviour
         nextPage.SetActive(true);
         thisPage.SetActive(false);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

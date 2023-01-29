@@ -53,8 +53,10 @@ public class GameManager : MonoBehaviour
     public GameObject loseMenu;
 
     //Test
-    public Card cardTest;
     public CardDisplay cdt;
+    public bool isTimerOk;
+    public float timerBase;
+    public float timerEnemy;
 
     public void DrawCard()
     {
@@ -105,7 +107,7 @@ public class GameManager : MonoBehaviour
     public void EnemyPlayCard()
     {
         Debug.Log("Enemy played a card");
-        if (enemyDeck.Count >= 1 && canEnemyPlay)
+        if (enemyDeck.Count >= 1 && canEnemyPlay && isTimerOk)
         {
             Card randCard = enemyDeck[Random.Range(0, enemyDeck.Count)];
             for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
@@ -118,7 +120,7 @@ public class GameManager : MonoBehaviour
                     availableCardSlotsEnemyBoard[i] = false;
                     int randCardCost = a.card.cost;
                     enemyBoard.Add(a.card);
-                    enemyDeck.Remove(randCard);
+                    enemyDeck.Remove(a.card);
                     PlayerExpendingEnergy(-randCardCost);
                     return;
                 }
@@ -228,39 +230,22 @@ public class GameManager : MonoBehaviour
 
     public void SwitchPlayed()
     {
-        switch (cardsPlayed)
+        if (cardsPlayed == 4)
         {
-            case 4:
-                Debug.Log("Case 4");
-                Rumble();
-                break;
-            case 8:
-                Rumble();
-                break;
-            case 12:
-                Rumble();
-                break;
-            case 16:
-                Rumble();
-                break;
-            case 20:
-                Rumble();
-                break;
-            case 24:
-                Rumble();
-                break;
-            case 28:
-                Rumble();
-                break;
-            case 32:
-                Rumble();
-                break;
-            case 36:
-                Rumble();
-                break;
-            case 40:
-                Rumble();
-                break;
+            Debug.Log("Case 4");
+            Rumble();
+            isTimerOk = false;
+            timerEnemy = timerBase + timeToWait;
+            cardsPlayed = 0;
+            RefreshText();
+        }
+    }
+
+    public void CheckTimer()
+    {
+        if(timerEnemy <= timerBase)
+        {
+            isTimerOk = true;
         }
     }
 
@@ -320,9 +305,9 @@ public class GameManager : MonoBehaviour
             playerPower = 0;
             enemyPower = 0;
         }
-        canEnemyPlay = false;
         StartCoroutine(Wait());
         StartCoroutine(ResetBoards2());
+        canEnemyPlay = false;
     }
 
     IEnumerator Wait()
@@ -407,7 +392,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerWins = enemyWins = 0;
+        timerEnemy = 0;
         DrawOpeningHand();
         TurnCheck();
+    }
+
+    private void Update()
+    {
+        timerBase += Time.deltaTime;
+        CheckTimer();
     }
 }
