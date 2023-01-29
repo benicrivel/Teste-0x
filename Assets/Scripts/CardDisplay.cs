@@ -14,6 +14,7 @@ public class CardDisplay : MonoBehaviour
     public Text costText;
     public Text attackText;
     public Text defenseText;
+    public Text effectText;
     public Image art;
 
     //More Details
@@ -26,7 +27,12 @@ public class CardDisplay : MonoBehaviour
         costText.text = card.cost.ToString();
         attackText.text = card.attack.ToString();
         defenseText.text = card.defense.ToString();
-        art.sprite = card.art;        
+        if (effectText)
+        {
+            effectText.text = card.effect;
+        }
+        art.sprite = card.art;
+        isInHand = true;
     }
 
     private void Update()
@@ -36,10 +42,15 @@ public class CardDisplay : MonoBehaviour
 
     public void PlayCard()
     {
-        Debug.Log("Played the card");
-        if (isInHand)
+        if (isInHand && gm.isPlayersTurn)
         {
+            if (card.name == "yuumi")
+            {
+                gm.DrawCard();
+            }                     
+            gm.PlayerPlayCard(this);
             gm.PlayerExpendingEnergy(card.cost);
+            Destroy(gameObject);
         }
     }
 }

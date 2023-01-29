@@ -181,8 +181,9 @@ MonoBehaviour:
   costText: {fileID: 8602468908719929107}
   attackText: {fileID: 7940979860843548851}
   defenseText: {fileID: 5379950357499275858}
+  effectText: {fileID: 0}
   art: {fileID: 2333006832298318465}
-  isInHand: 0
+  isInHand: 1
   canPlay: 0
 --- !u!61 &-6011712702154520955
 BoxCollider2D:
