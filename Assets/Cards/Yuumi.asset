@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac3c8dd0cce1bb4baf32d9c4022dbff, type: 3}
   m_Name: Yuumi
   m_EditorClassIdentifier: 
-  cost: 3
+  cost: 2
   cardName: yuumi
   attack: 0
   defense: 1

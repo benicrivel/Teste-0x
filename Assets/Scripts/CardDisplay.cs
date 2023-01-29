@@ -18,8 +18,8 @@ public class CardDisplay : MonoBehaviour
     public Image art;
 
     //More Details
-    public bool isInHand;
     public bool canPlay;
+    public int handIndex;
 
     private void Start()
     {
@@ -32,7 +32,6 @@ public class CardDisplay : MonoBehaviour
             effectText.text = card.effect;
         }
         art.sprite = card.art;
-        isInHand = true;
     }
 
     private void Update()
@@ -42,13 +41,14 @@ public class CardDisplay : MonoBehaviour
 
     public void PlayCard()
     {
-        if (isInHand && gm.isPlayersTurn)
+        if (gm.isPlayersTurn)
         {
             if (card.name == "yuumi")
             {
                 gm.DrawCard();
             }                     
             gm.PlayerPlayCard(this);
+            gm.availableCardSlots[handIndex] = true;
             gm.PlayerExpendingEnergy(card.cost);
             Destroy(gameObject);
         }

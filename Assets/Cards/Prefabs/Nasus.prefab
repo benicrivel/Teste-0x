@@ -183,7 +183,7 @@ MonoBehaviour:
   defenseText: {fileID: 5379950357499275858}
   effectText: {fileID: 0}
   art: {fileID: 2333006832298318465}
-  isInHand: 1
+  isInHand: 0
   canPlay: 0
 --- !u!61 &7238272032088765109
 BoxCollider2D:

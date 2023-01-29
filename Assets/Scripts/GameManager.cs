@@ -42,6 +42,11 @@ public class GameManager : MonoBehaviour
     public int cardsPlayed;
     public Text cardsPlayedText;
 
+    //Aniamtion
+    public float timeToWait;
+    public GameObject fire;
+    public GameObject crown;
+
     //End Game
     public GameObject winMenu;
     public GameObject loseMenu;
@@ -56,6 +61,7 @@ public class GameManager : MonoBehaviour
                 if(availableCardSlots[i] == true)
                 {
                     Instantiate(randCard, cardSlots[i]);
+                    randCard.handIndex = i;
                     availableCardSlots[i] = false;
                     playerHand.Add(randCard);
                     playerDeck.Remove(randCard);
@@ -73,13 +79,11 @@ public class GameManager : MonoBehaviour
             {                
                 CardDisplay a = Instantiate(cd, playerBoardPos[i]);
                 a.gameObject.AddComponent<BornToDie>();
-                Debug.Log("nome carta a: " + a.card.cardName);
                 availableCardSlotsPlayerBoard[i] = false;
                 playerBoard.Add(a);
                 //Make the hand spot free again
                 for(int o = 0; o > playerHand.Count; o++)
                 {
-                    Debug.Log("Nome PlayerHand: " + playerHand[o].card.cardName);
                     if (playerHand[o].card.cardName == a.card.cardName)
                     {                        
                         availableCardSlots[o] = true;
@@ -102,7 +106,6 @@ public class GameManager : MonoBehaviour
                 {
                     CardDisplay a = Instantiate(randCard, enemyBoardPos[i]);
                     a.gameObject.AddComponent<BornToDie>();
-                    Debug.Log("Enemy played: " + a.card.cardName);
                     availableCardSlotsEnemyBoard[i] = false;
                     int randCardCost = a.card.cost;
                     PlayerExpendingEnergy(-randCardCost);
@@ -141,6 +144,18 @@ public class GameManager : MonoBehaviour
                 winMenu.SetActive(true);
                 break;
         }
+
+        //Spawn Crown on Player Cards
+        for (int i = 0; i < playerBoard.Count; i++)
+        {
+            GameObject go = Instantiate(crown, playerBoardPos[i]);
+        }
+
+        //Spawn Fire on Enemy Cards
+        for (int i = 0; i < enemyBoard.Count; i++)
+        {
+            GameObject go = Instantiate(fire, enemyBoardPos[i]);
+        }
     }
 
     public void EnemyWin()
@@ -160,6 +175,18 @@ public class GameManager : MonoBehaviour
                 loseMenu.SetActive(true);
                 break;
         }
+
+        //Spawn Fire on Player Cards
+        for (int i = 0; i < playerBoard.Count; i++)
+        {
+            GameObject go = Instantiate(fire, playerBoardPos[i]);
+        }
+
+        //Spawn Crown on Enemy Cards
+        for (int i = 0; i < enemyBoard.Count; i++)
+        {
+            GameObject go = Instantiate(crown, enemyBoardPos[i]);
+        }
     }
 
     public void EndTurn()
@@ -176,7 +203,6 @@ public class GameManager : MonoBehaviour
     {
         cardsPlayed++;
         energy -= a;        
-        Debug.Log("Cards: " + cardsPlayed);
         RefreshText();
         SwitchPlayed();
         TurnCheck();
@@ -240,6 +266,7 @@ public class GameManager : MonoBehaviour
         {
             isPlayersTurn = true;
             canEnemyPlay = false;
+            DrawCard();
         }
         else
         {
@@ -268,13 +295,22 @@ public class GameManager : MonoBehaviour
         }
         else if(playerPower < enemyPower)
         {
-            Debug.Log("" + enemyPower);
             EnemyWin();
             playerPower = 0;
             enemyPower = 0;
         }
+        StartCoroutine(Wait());
+        StartCoroutine(ResetBoards2());
+        //ResetBoards();
+    }
 
-        ResetBoards();
+    IEnumerator Wait()
+    {
+        //yield return new WaitForSeconds(10f);
+        canEnemyPlay = false;
+        isPlayersTurn = false;
+        yield return new WaitForSecondsRealtime(timeToWait);
+
     }
 
     public int CheckPlayerBoard()
@@ -284,9 +320,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerBoard.Count; i++)
         {
             a += playerBoard[i].card.attack;
-        }
-
-        Debug.Log("PlayerPower: " + a);
+            Debug.Log("PlayerPower: " + a);
+        }      
 
         return a;
     }
@@ -298,11 +333,31 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < enemyBoard.Count; i++)
         {
             a += enemyBoard[i].card.attack;
-        }
-
-        Debug.Log("EnemyPower: " + a);
+            Debug.Log("EnemyPower: " + a);
+        }      
 
         return a;
+    }
+
+
+    IEnumerator ResetBoards2()
+    {
+        yield return new WaitForSecondsRealtime(timeToWait);
+        playerBoard.Clear();
+        for (int i = 0; i < availableCardSlotsPlayerBoard.Length; i++)
+        {
+            availableCardSlotsPlayerBoard[i] = true;
+        }
+        enemyBoard.Clear();
+        for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
+        {
+            availableCardSlotsEnemyBoard[i] = true;
+            //enemyBoardPos[i].
+        }
+        foreach (BornToDie c in FindObjectsOfType<BornToDie>())
+        {
+            Destroy(c.gameObject);
+        }
     }
 
     public void ResetBoards()
@@ -310,13 +365,14 @@ public class GameManager : MonoBehaviour
         playerBoard.Clear();
         for(int i = 0; i < availableCardSlotsPlayerBoard.Length; i++)
         {
-            availableCardSlotsPlayerBoard[i].Equals(true);
+            availableCardSlotsPlayerBoard[i] = true;
         }
         enemyBoard.Clear();
         for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
         {
-            availableCardSlotsEnemyBoard[i].Equals(true);
-        }
+            availableCardSlotsEnemyBoard[i] = true;
+            //enemyBoardPos[i].
+        }        
         foreach (BornToDie c in FindObjectsOfType<BornToDie>())
         {
             Destroy(c.gameObject);
