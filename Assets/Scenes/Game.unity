@@ -176,6 +176,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476e681a62186194fb3f83eba42984ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  howToPlayMenu: {fileID: 0}
+  thisPage: {fileID: 0}
+  nextPage: {fileID: 0}
 --- !u!114 &21337759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1793,6 +1796,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476e681a62186194fb3f83eba42984ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  howToPlayMenu: {fileID: 0}
+  thisPage: {fileID: 0}
+  nextPage: {fileID: 0}
 --- !u!114 &416656161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6041,6 +6047,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476e681a62186194fb3f83eba42984ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  howToPlayMenu: {fileID: 0}
+  thisPage: {fileID: 0}
+  nextPage: {fileID: 0}
 --- !u!114 &1575091997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7798,6 +7807,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476e681a62186194fb3f83eba42984ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  howToPlayMenu: {fileID: 0}
+  thisPage: {fileID: 0}
+  nextPage: {fileID: 0}
 --- !u!114 &1898698777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7909,7 +7921,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1923952556
 RectTransform:
   m_ObjectHideFlags: 0

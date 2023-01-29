@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviour
 
     public void EnemyPlayCard()
     {
+        Debug.Log("Enemy played a card");
         if (enemyDeck.Count >= 1 && canEnemyPlay)
         {
             Card randCard = enemyDeck[Random.Range(0, enemyDeck.Count)];
@@ -218,6 +219,7 @@ public class GameManager : MonoBehaviour
         TurnCheck();
     }
 
+    //Energy Meter Movement
     public void MoveTag(int a)
     {
         float i = tag.transform.position.y + (a * 25f);
@@ -278,6 +280,7 @@ public class GameManager : MonoBehaviour
 
     public void TurnCheck()
     {
+        Debug.Log("Turn Check");
         if (energy >= 0)
         {
             isPlayersTurn = true;
@@ -288,13 +291,14 @@ public class GameManager : MonoBehaviour
         {
             isPlayersTurn = false;
             canEnemyPlay = true;
-            //EnemyPlayCard();
             EnemyPlayCard();
         }
     }
 
     public void CheckBoards()
     {
+        Debug.Log("Board Check");
+
         int playerPower = 0;
         int enemyPower = 0;
 
@@ -319,12 +323,10 @@ public class GameManager : MonoBehaviour
         canEnemyPlay = false;
         StartCoroutine(Wait());
         StartCoroutine(ResetBoards2());
-        //ResetBoards();
     }
 
     IEnumerator Wait()
     {
-        //yield return new WaitForSeconds(10f);
         canEnemyPlay = false;
         isPlayersTurn = false;
         yield return new WaitForSecondsRealtime(timeToWait);
@@ -332,6 +334,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ResetBoards2()
     {
+        Debug.Log("Reset Boards");
         yield return new WaitForSecondsRealtime(timeToWait);
         playerBoard.Clear();
         for (int i = 0; i < availableCardSlotsPlayerBoard.Length; i++)
@@ -342,7 +345,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < availableCardSlotsEnemyBoard.Length; i++)
         {
             availableCardSlotsEnemyBoard[i] = true;
-            //enemyBoardPos[i].
         }
         foreach (BornToDie c in FindObjectsOfType<BornToDie>())
         {
@@ -400,7 +402,6 @@ public class GameManager : MonoBehaviour
         isPlayersTurn = false;
         canEnemyPlay = false;
         CheckBoards();
-        TurnCheck();
     }
 
     void Start()
